@@ -4,3 +4,9 @@ spring:
     password: '8b3b91c7'
     url: 'jdbc:mysql://localhost:3306/assessment'
 
+
+
+server:
+  servlet:
+    context-path: '/abc-hardware'
+  port: 8989
