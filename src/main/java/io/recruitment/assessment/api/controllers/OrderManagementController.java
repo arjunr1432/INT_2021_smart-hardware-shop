@@ -5,9 +5,10 @@ import io.recruitment.assessment.gen.api.OrdersApiDelegate;
 import io.recruitment.assessment.gen.model.AddProductRequest;
 import io.recruitment.assessment.gen.model.ShoppingCartData;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -18,10 +19,10 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class OrderManagementController implements OrdersApi {
 
-    @Autowired
-    private OrdersApiDelegate ordersApiDelegate;
+    private final OrdersApiDelegate ordersApiDelegate;
 
     /**
      * POST /orders/api/v1/create : This API will create a new shopping cart for the customer to which the products will be added for checkout.
@@ -31,6 +32,7 @@ public class OrderManagementController implements OrdersApi {
      *         or Exception scenarios (status code 200)
      * @see OrdersApi#ordersApiV1CreatePost
      */
+    @PreAuthorize("hasRole('CUSTOMER')")
     public CompletableFuture<ResponseEntity<ShoppingCartData>> ordersApiV1CreatePost(
             @ApiParam(value = "Unique identifier for idempotency" ,required=true)
             @RequestHeader(value="Idempotency-Key", required=true) String idempotencyKey) {
@@ -52,6 +54,7 @@ public class OrderManagementController implements OrdersApi {
      *         or Exception scenarios (status code 200)
      * @see OrdersApi#ordersApiV1AddOrderIdPut
      */
+    @PreAuthorize("hasRole('CUSTOMER')")
     public CompletableFuture<ResponseEntity<ShoppingCartData>> ordersApiV1AddOrderIdPut(
             @ApiParam(value = "Unique identifier for idempotency" ,required=true)
             @RequestHeader(value="Idempotency-Key", required=true) String idempotencyKey,
@@ -76,6 +79,7 @@ public class OrderManagementController implements OrdersApi {
      *         or Exception scenarios (status code 200)
      * @see OrdersApi#ordersApiV1SummaryOrderIdGet
      */
+    @PreAuthorize("hasRole('CUSTOMER')")
     public CompletableFuture<ResponseEntity<ShoppingCartData>> ordersApiV1SummaryOrderIdGet(
             @ApiParam(value = "",required=true) @PathVariable("orderId") String orderId) {
         log.info("Request received for get order summary, orderId={}", orderId);

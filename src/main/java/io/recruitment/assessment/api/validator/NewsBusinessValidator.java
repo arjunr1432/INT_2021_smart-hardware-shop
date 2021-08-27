@@ -5,6 +5,7 @@ import io.recruitment.assessment.api.exception.CustomBusinessException;
 import io.recruitment.assessment.api.repository.IdempotencyRepository;
 import io.recruitment.assessment.api.repository.NewsRepository;
 import io.recruitment.assessment.gen.model.AddNewsRequest;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,15 +14,12 @@ import org.springframework.stereotype.Component;
 import java.time.OffsetDateTime;
 
 @Component
+@RequiredArgsConstructor
 public class NewsBusinessValidator {
 
-    @Autowired
-    private NewsRepository productRepository;
+    private final NewsRepository productRepository;
 
-    @Autowired
-    private IdempotencyRepository idempotencyRepository;
-
-
+    private final IdempotencyRepository idempotencyRepository;
 
     private void validateIdempotencyKey(String idempotencyKey) {
         if (StringUtils.isBlank(idempotencyKey)) {

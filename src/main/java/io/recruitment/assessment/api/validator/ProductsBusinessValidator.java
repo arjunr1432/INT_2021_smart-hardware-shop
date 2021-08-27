@@ -4,19 +4,18 @@ import io.recruitment.assessment.api.dvo.Idempotency;
 import io.recruitment.assessment.api.exception.CustomBusinessException;
 import io.recruitment.assessment.api.repository.IdempotencyRepository;
 import io.recruitment.assessment.api.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ProductsBusinessValidator {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-    @Autowired
-    private IdempotencyRepository idempotencyRepository;
+    private final IdempotencyRepository idempotencyRepository;
 
     public void validateProductCreateRequest(String idempotencyKey){
         validateIdempotencyKey(idempotencyKey);

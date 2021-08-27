@@ -80,7 +80,7 @@
             <version>0.2.1</version>
         </dependency>
 
-        <!-- Log4j properties-->
+        <!-- Log4j dependency-->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -93,6 +93,23 @@
             <artifactId>lombok</artifactId>
             <version>1.18.20</version>
             <optional>true</optional>
+        </dependency>
+
+        <!-- Spring security dependencies-->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>5.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>5.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>5.5.1</version>
         </dependency>
     </dependencies>
 

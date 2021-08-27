@@ -5,9 +5,10 @@ import io.recruitment.assessment.gen.api.NewsApiDelegate;
 import io.recruitment.assessment.gen.model.AddNewsRequest;
 import io.recruitment.assessment.gen.model.NewsCatalogueResponseData;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,10 +20,10 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class NewsManagementController implements NewsApi {
 
-    @Autowired
-    private NewsApiDelegate newsApiDelegate;
+    private final NewsApiDelegate newsApiDelegate;
 
     /**
      * POST /news/api/v1/add : This API will add a news or product offer to our system.
@@ -33,6 +34,7 @@ public class NewsManagementController implements NewsApi {
      *         or Exception scenarios (status code 200)
      * @see NewsApi#newsApiV1AddPost
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public CompletableFuture<ResponseEntity<NewsCatalogueResponseData>> newsApiV1AddPost(
             @ApiParam(value = "Unique identifier for idempotency" ,required=true)
             @RequestHeader(value="Idempotency-Key", required=true) String idempotencyKey,
@@ -56,6 +58,7 @@ public class NewsManagementController implements NewsApi {
      *         or Exception scenarios (status code 200)
      * @see NewsApi#newsApiV1ListGet
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     public CompletableFuture<ResponseEntity<List<NewsCatalogueResponseData>>> newsApiV1ListGet(
             @ApiParam(value = "Page number to choose which page to list, by default the value will be 0.")
             @Valid @RequestParam(value = "pageNo", required = false) Long pageNo,

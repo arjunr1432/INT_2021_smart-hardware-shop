@@ -18,3 +18,12 @@ server:
   servlet:
     context-path: '/abc-hardware'
   port: 8989
+
+basic:
+  auth:
+    customer:
+      username: 'customer'
+      password: '{noop}customer_password'
+    admin:
+      username: 'admin'
+      password: '{noop}admin_password'

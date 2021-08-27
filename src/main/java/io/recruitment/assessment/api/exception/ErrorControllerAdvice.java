@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -88,6 +89,12 @@ public class ErrorControllerAdvice {
 			HttpMessageNotReadableException e, HttpServletRequest request) {
 		logExceptionTrace(e, request);
 		return createResponse(HttpStatus.BAD_REQUEST, e.getMessage(), "HttpMessageNotReadableException");
+	}
+
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<Error> handleException(AccessDeniedException e, HttpServletRequest request) {
+		logExceptionTrace(e, request);
+		return createResponse(HttpStatus.FORBIDDEN, e.getMessage(), "AccessDenied");
 	}
 
 	@ExceptionHandler(Exception.class)

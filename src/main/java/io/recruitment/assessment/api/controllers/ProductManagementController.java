@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,6 +31,7 @@ public class ProductManagementController implements ProductsApi {
      *         or Exception scenarios (status code 200)
      * @see ProductsApi#productsApiV1AddPost
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public CompletableFuture<ResponseEntity<ProductCatalogueResponseData>> productsApiV1AddPost(
             @ApiParam(value = "Unique identifier for idempotency" ,required=true)
             @RequestHeader(value="Idempotency-Key", required=true) String idempotencyKey,
@@ -53,6 +55,7 @@ public class ProductManagementController implements ProductsApi {
      *         or Exception scenarios (status code 200)
      * @see ProductsApi#productsApiV1DeleteProductIdDelete
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public CompletableFuture<ResponseEntity<ProductCatalogueResponseData>> productsApiV1DeleteProductIdDelete(
             @ApiParam(value = "Unique identifier for idempotency" ,required=true)
             @RequestHeader(value="Idempotency-Key", required=true) String idempotencyKey,
@@ -77,6 +80,7 @@ public class ProductManagementController implements ProductsApi {
      *         or Exception scenarios (status code 200)
      * @see ProductsApi#productsApiV1ListGet
      */
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     public CompletableFuture<ResponseEntity<List<ProductCatalogueResponseData>>> productsApiV1ListGet(
             @ApiParam(value = "Custom search param for filtering the product list.")
             @Valid @RequestParam(value = "searchParam", required = false) String searchParam,
@@ -104,6 +108,7 @@ public class ProductManagementController implements ProductsApi {
      *         or Exception scenarios
      * @see ProductsApi#productsApiV1UpdateProductIdPut
      */
+    @PreAuthorize("hasRole('ADMIN')")
     public CompletableFuture<ResponseEntity<ProductCatalogueResponseData>> productsApiV1UpdateProductIdPut(
             @ApiParam(value = "Unique identifier for idempotency" ,required=true)
             @RequestHeader(value="Idempotency-Key", required=true) String idempotencyKey,

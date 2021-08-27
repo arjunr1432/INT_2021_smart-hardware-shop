@@ -10,8 +10,8 @@ import io.recruitment.assessment.gen.api.OrdersApiDelegate;
 import io.recruitment.assessment.gen.model.AddProductRequest;
 import io.recruitment.assessment.gen.model.ProductItemData;
 import io.recruitment.assessment.gen.model.ShoppingCartData;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -29,16 +29,14 @@ import static java.time.ZoneOffset.UTC;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class OrderManagementServiceImpl implements OrdersApiDelegate {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-    @Autowired
-    private OrderBusinessValidator businessValidator;
+    private final OrderBusinessValidator businessValidator;
 
 
     @Override

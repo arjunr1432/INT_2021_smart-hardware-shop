@@ -6,22 +6,20 @@ import io.recruitment.assessment.api.repository.IdempotencyRepository;
 import io.recruitment.assessment.api.repository.OrderRepository;
 import io.recruitment.assessment.api.repository.ProductRepository;
 import io.recruitment.assessment.gen.model.AddProductRequest;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class OrderBusinessValidator {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-    @Autowired
-    private IdempotencyRepository idempotencyRepository;
+    private final IdempotencyRepository idempotencyRepository;
 
 
 
