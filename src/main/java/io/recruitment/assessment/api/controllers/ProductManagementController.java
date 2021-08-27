@@ -4,9 +4,9 @@ import io.recruitment.assessment.gen.api.ProductsApi;
 import io.recruitment.assessment.gen.api.ProductsApiDelegate;
 import io.recruitment.assessment.gen.model.CreateOrUpdateProductRequest;
 import io.recruitment.assessment.gen.model.ProductCatalogueResponseData;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,11 +14,12 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 @RestController
+@RequiredArgsConstructor
 public class ProductManagementController implements ProductsApi {
 
-    @Autowired
-    private ProductsApiDelegate productsApiDelegate;
+    private final ProductsApiDelegate productsApiDelegate;
 
     /**
      * POST /products/api/v1/add : This API will add a product to the catalogue.
@@ -34,7 +35,13 @@ public class ProductManagementController implements ProductsApi {
             @RequestHeader(value="Idempotency-Key", required=true) String idempotencyKey,
             @ApiParam(value = "Request payload for adding a new product to our catalogue." ,required=true )
             @Valid @RequestBody CreateOrUpdateProductRequest createOrUpdateProductRequest) {
-        return productsApiDelegate.productsApiV1AddPost(idempotencyKey, createOrUpdateProductRequest);
+
+        log.info("Request received for adding product, idempotencyKey={}", idempotencyKey);
+        return productsApiDelegate.productsApiV1AddPost(idempotencyKey, createOrUpdateProductRequest)
+                .thenApply(productCatalogueResponseDataResponseEntity -> {
+                    log.info("Product added successfully.");
+                    return productCatalogueResponseDataResponseEntity;
+                });
     }
 
     /**
@@ -51,7 +58,13 @@ public class ProductManagementController implements ProductsApi {
             @RequestHeader(value="Idempotency-Key", required=true) String idempotencyKey,
             @ApiParam(value = "The unique product id in our system, for which we need to delete from our system.",required=true)
             @PathVariable("productId") Long productId) {
-        return productsApiDelegate.productsApiV1DeleteProductIdDelete(idempotencyKey, productId);
+
+        log.info("Request received for deleting, productId={}, idempotencyKey={}", productId, idempotencyKey);
+        return productsApiDelegate.productsApiV1DeleteProductIdDelete(idempotencyKey, productId)
+                .thenApply(productCatalogueResponseDataResponseEntity -> {
+                    log.info("Product deleted successfully.");
+                    return productCatalogueResponseDataResponseEntity;
+                });
     }
 
     /**
@@ -71,7 +84,14 @@ public class ProductManagementController implements ProductsApi {
             @Valid @RequestParam(value = "pageNo", required = false) Long pageNo,
             @ApiParam(value = "Page size to choose how many entries to be shown per page, by default the value will be 10.")
             @Valid @RequestParam(value = "pageSize", required = false) Long pageSize) {
-        return productsApiDelegate.productsApiV1ListGet(searchParam, pageNo, pageSize);
+
+        log.info("Request received for fetching product list, searchParam={}, pageSize={}, pageNo={}", searchParam, pageSize, pageNo);
+
+        return productsApiDelegate.productsApiV1ListGet(searchParam, pageNo, pageSize)
+                .thenApply(listResponseEntity -> {
+                    log.info("Fetched {} records successfully.", listResponseEntity.getBody().size());
+                    return listResponseEntity;
+        });
     }
 
     /**
@@ -91,6 +111,12 @@ public class ProductManagementController implements ProductsApi {
             @PathVariable("productId") Long productId,
             @ApiParam(value = "Request payload for updating an existing product in our catalogue.." ,required=true )
             @Valid @RequestBody CreateOrUpdateProductRequest createOrUpdateProductRequest) {
-        return productsApiDelegate.productsApiV1UpdateProductIdPut(idempotencyKey, productId, createOrUpdateProductRequest);
+
+        log.info("Request received for updating, productId={}, idempotencyKey={}", productId, idempotencyKey);
+        return productsApiDelegate.productsApiV1UpdateProductIdPut(idempotencyKey, productId, createOrUpdateProductRequest)
+                .thenApply(productCatalogueResponseDataResponseEntity -> {
+                    log.info("Product updated successfully.");
+                    return productCatalogueResponseDataResponseEntity;
+                });
     }
 }

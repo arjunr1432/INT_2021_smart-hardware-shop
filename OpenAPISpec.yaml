@@ -10,7 +10,7 @@ tags:
   - name: "News"
     description: "APIs to create and view News details."
   - name: "Shopping"
-    description: "APIs to create shoping cart, add/remove products and view order summary."
+    description: "APIs to create shopping cart, add/remove products and view order summary."
   - name: "Orders"
     description: "APIs to operate with Products"
 paths:
@@ -30,7 +30,7 @@ paths:
         - name: pageNo
           in: query
           required: false
-          description: 'Page number to choose which page to list, by default the value will be 1.'
+          description: 'Page number to choose which page to list, by default the value will be 0.'
           example: 10
           schema:
             type: integer
@@ -105,7 +105,7 @@ paths:
         - name: productId
           in: path
           required: true
-          description: 'The unique product id in our system, for which we need to update informations.'
+          description: 'The unique product id in our system, for which we need to update information.'
           example: 10001
           schema:
             type: integer
@@ -170,6 +170,23 @@ paths:
       summary: 'This API will return the Products list in the catalogue.'
       tags:
         - News
+      parameters:
+        - name: pageNo
+          in: query
+          required: false
+          description: 'Page number to choose which page to list, by default the value will be 0.'
+          example: 10
+          schema:
+            type: integer
+            format: int64
+        - name: pageSize
+          in: query
+          required: false
+          description: 'Page size to choose how many entries to be shown per page, by default the value will be 10.'
+          example: 20
+          schema:
+            type: integer
+            format: int64
       responses:
         '200':
           description: 'Successful response: List of all active newses or offers.'
@@ -219,7 +236,7 @@ paths:
 
   /orders/api/v1/create:
     post:
-      summary: 'This API will create a new shoping cart for the customer to which the products will be added for checkout.'
+      summary: 'This API will create a new shopping cart for the customer to which the products will be added for checkout.'
       tags:
         - Shopping
       parameters:
@@ -232,11 +249,11 @@ paths:
             type: string
       responses:
         '201':
-          description: 'Successful response: created new shoping cart with unique order id.'
+          description: 'Successful response: created new shopping cart with unique order id.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ShopingCartData'
+                $ref: '#/components/schemas/ShoppingCartData'
         default:
           description: Exception scenarios
           content:
@@ -245,7 +262,7 @@ paths:
                 $ref: '#/components/schemas/Error'
   /orders/api/v1/add/{orderId}:
     put:
-      summary: 'This API will add a new product to an existing shoping cart.'
+      summary: 'This API will add a new product to an existing shopping cart.'
       tags:
         - Shopping
       parameters:
@@ -262,8 +279,7 @@ paths:
           description: 'The unique order id in our system, for which we will be adding new product.'
           example: 49ae0cfe-6b72-4310-81f5-ad4eef897fe3
           schema:
-            type: integer
-            format: int64
+            type: string
       requestBody:
         content:
           application/json:
@@ -277,7 +293,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ShopingCartData'
+                $ref: '#/components/schemas/ShoppingCartData'
         default:
           description: Exception scenarios
           content:
@@ -286,7 +302,7 @@ paths:
                 $ref: '#/components/schemas/Error'
   /orders/api/v1/summary/{orderId}:
     get:
-      summary: 'This API will show the summary of a shoping cart.'
+      summary: 'This API will show the summary of a shopping cart.'
       tags:
         - Shopping
       parameters:
@@ -302,7 +318,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ShopingCartData'
+                $ref: '#/components/schemas/ShoppingCartData'
         default:
           description: Exception scenarios
           content:
@@ -326,7 +342,6 @@ components:
         - name
         - description
         - price
-        - inventory
       properties:
         product_id:
           type: integer
@@ -346,11 +361,6 @@ components:
           description: 'Price of the item. Upto two decimals.'
           example: "100.00"
           pattern: '^[0-9]+\.[0-9]{2}$'
-        inventory:
-          type: integer
-          format: int64
-          description: 'No of available items in our inventory.'
-          example: 999
     NewsCatalogueResponseData:
       type: object
       required:
@@ -362,7 +372,7 @@ components:
         news_id:
           type: integer
           format: int64
-          description: 'Uniqu news id in our system.'
+          description: 'Unique news id in our system.'
           example: 10001
         title:
           type: string
@@ -370,25 +380,24 @@ components:
           example: "Big offers on Drill bits"
         description:
           type: string
-          description: 'Detaild description about the news.'
+          description: 'Detailed description about the news.'
           example: "Exiting offers on all sizes of drill bits."
         expiry_date:
           type: string
           format: date-time
           description: 'The expiry date of the news.'
           example: "1985-04-12T23:20:50.52Z"
-    ShopingCartData:
+    ShoppingCartData:
       type: object
       required:
         - order_id
         - items
         - created_date
         - total_price
-        - cart_expiry
       properties:
         order_id:
           type: string
-          description: 'Uniqu order id in our system.'
+          description: 'Unique order id in our system.'
           example: order-asdasd-1312-adasd
         items:
           type: array
@@ -400,21 +409,11 @@ components:
           format: date-time
           description: 'The date on which the order has created.'
           example: "1985-04-12T23:20:50.52Z"
-        updated_date:
-          type: string
-          format: date-time
-          description: 'The date on which the order has last updated.'
-          example: "1985-04-12T23:20:50.52Z"
         total_price:
           type: string
           description: 'Price of the item. Upto two decimals.'
           example: "100.00"
           pattern: '^[0-9]+\.[0-9]{2}$'
-        cart_expiry:
-          type: string
-          format: date-time
-          description: 'The date on which the order has created.'
-          example: "1985-04-12T23:20:50.52Z"
     ProductItemData:
       type: object
       required:
@@ -427,7 +426,7 @@ components:
         product_id:
           type: integer
           format: int64
-          description: 'Uniqu product id in our system.'
+          description: 'Unique product id in our system.'
           example: 10001
         name:
           type: string
@@ -441,7 +440,7 @@ components:
         count:
           type: integer
           format: int64
-          description: 'No of items choosen in the order.'
+          description: 'No of items chosen in the order.'
           example: 10001
         total_item_price:
           type: string
@@ -469,11 +468,6 @@ components:
           description: 'Price of the item. Upto two decimals.'
           example: "100.00"
           pattern: '^[0-9]+\.[0-9]{2}$'
-        inventory:
-          type: integer
-          format: int64
-          description: 'No of available items in our inventory.'
-          example: 900
     AddNewsRequest:
       type: object
       required:
@@ -487,7 +481,7 @@ components:
           example: "Offers on drill bits"
         description:
           type: string
-          description: 'Detaild description about the news.'
+          description: 'Detailed description about the news.'
           example: "Exiting offers on latest model drill bits."
         expiry_date:
           type: string
