@@ -131,7 +131,7 @@
                         </goals>
                         <configuration>
                             <inputSpec>
-                                OpenAPISpec.yaml
+                                documents/OpenAPISpec.yaml
                             </inputSpec>
                             <generatorName>spring</generatorName>
                             <modelPackage>io.recruitment.assessment.gen.model</modelPackage>
